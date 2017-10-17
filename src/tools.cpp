@@ -85,3 +85,16 @@ MatrixXd Tools::CalculateJacobian(const VectorXd& x_state) {
   return Hj;
 
 }
+
+void Tools::NormalizePhi(float &original_phi) {
+  const float pi = float(M_PI); // use C++ math.h M_PI, cast double to float
+  if (original_phi > pi) {
+    while (original_phi > pi) {
+      original_phi = original_phi - 2 * pi;
+    }
+  } else if (original_phi < -pi) {
+    while (original_phi < -pi) {
+      original_phi = original_phi + 2 * pi;
+    }
+  }
+}

@@ -1,6 +1,7 @@
 #ifndef TOOLS_H_
 #define TOOLS_H_
 #include <vector>
+#include <math.h>
 #include "Eigen/Dense"
 
 using Eigen::MatrixXd;
@@ -28,6 +29,11 @@ public:
   * A helper method to calculate Jacobians.
   */
   MatrixXd CalculateJacobian(const VectorXd& x_state);
+
+  /**
+   * A helper method to make sure phi is in range from -pi to +pi
+   */
+  void NormalizePhi(float &original_phi);
 
 };
 
