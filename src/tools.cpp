@@ -12,7 +12,7 @@ Tools::~Tools() {}
 VectorXd Tools::CalculateRMSE(const vector<VectorXd> &estimations,
                               const vector<VectorXd> &ground_truth) {
   /**
-  TODO:
+  TODO: [DONE]
     * Calculate the RMSE here.
   */
 
@@ -55,7 +55,7 @@ VectorXd Tools::CalculateRMSE(const vector<VectorXd> &estimations,
 
 MatrixXd Tools::CalculateJacobian(const VectorXd& x_state) {
   /**
-  TODO:
+  TODO: [DONE]
     * Calculate a Jacobian here.
   */
 
@@ -86,7 +86,7 @@ MatrixXd Tools::CalculateJacobian(const VectorXd& x_state) {
 
 }
 
-void Tools::NormalizePhi(float &original_phi) {
+float Tools::NormalizePhi(float &original_phi) {
   const float pi = float(M_PI); // use C++ math.h M_PI, cast double to float
   if (original_phi > pi) {
     while (original_phi > pi) {
@@ -97,4 +97,5 @@ void Tools::NormalizePhi(float &original_phi) {
       original_phi = original_phi + 2 * pi;
     }
   }
+  return original_phi;
 }
