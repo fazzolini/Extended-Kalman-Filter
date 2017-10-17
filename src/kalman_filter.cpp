@@ -44,16 +44,45 @@ void KalmanFilter::Update(const VectorXd &z) {
   MatrixXd PHt = P_ * Ht;
   MatrixXd K = PHt * Si;
 
-  //new estimate
+  // new estimate
   x_ = x_ + (K * y);
   long x_size = x_.size();
   MatrixXd I = MatrixXd::Identity(x_size, x_size);
   P_ = (I - K * H_) * P_;
 }
 
-void KalmanFilter::UpdateEKF(const VectorXd &z) {
+void KalmanFilter::UpdateEKF(const VectorXd &z_measured) {
   /**
-  TODO:
+  TODO: [DONE]
     * update the state by using Extended Kalman Filter equations
   */
+  // NOTE: z_measured is incoming current radar measurement (rho, phi, delta_rho)
+  // need to first compute (rho, phi, delta_rho) from the current state (px, py, vx, vy)
+  float px = x_(0), py = x_(1), vx = x_(2), vy = x_(3);
+  float rho = sqrtf(px * px + py * py);
+  float phi = atanf(py / px);
+  float delta_rho; // need to make sure that denominator is not zero
+  if (fabsf(rho) < 0.0001) {
+    delta_rho = 0;
+  } else {
+    delta_rho = (px * vx + py * vy) / rho;
+  }
+
+  // create a vector of predictions in polar coordinate format
+  VectorXd z_predicted(3);
+  z_predicted << rho, phi, delta_rho;
+
+  // next lines are similar to the standard linear Kalman Filter
+  VectorXd y = z_measured - z_predicted;
+  MatrixXd Ht = H_.transpose();
+  MatrixXd S = H_ * P_ * Ht + R_;
+  MatrixXd Si = S.inverse();
+  MatrixXd PHt = P_ * Ht;
+  MatrixXd K = PHt * Si;
+
+  //new estimate is still the same as linear Kalman Filter
+  x_ = x_ + (K * z_measured);
+  long x_size = x_.size();
+  MatrixXd I = MatrixXd::Identity(x_size, x_size);
+  P_ = (I - K * H_) * P_;
 }
