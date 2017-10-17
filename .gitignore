@@ -4,6 +4,9 @@
 # build files
 build/
 
+# build files
+cmake-build-debug/
+
 # editor config
 .vscode/
 .vscode/*
