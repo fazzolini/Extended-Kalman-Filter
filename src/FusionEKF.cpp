@@ -70,6 +70,21 @@ FusionEKF::FusionEKF() {
               0, 0, 1000, 0,
               0, 0, 0, 1000;
 
+  //set the acceleration noise components
+  noise_ax = 9;
+  noise_ay = 9;
+
+  // initial G_
+  ekf_.G_ = MatrixXd(4,2);
+  ekf_.G_ <<  1, 0,
+              0, 1,
+              1, 0,
+              0,1;
+
+  // initial Qv_ - will stay constant throughout
+  ekf_.Qv_ = MatrixXd(2,2);
+  ekf_.Qv_ << noise_ax, 0,
+              0, noise_ay;
 }
 
 /**
@@ -132,12 +147,29 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
    ****************************************************************************/
 
   /**
-   TODO:
+   TODO: [DONE]
      * Update the state transition matrix F according to the new elapsed time.
       - Time is measured in seconds.
      * Update the process noise covariance matrix.
      * Use noise_ax = 9 and noise_ay = 9 for your Q matrix.
    */
+  // 1. compute the time elapsed between the current and previous measurements
+  float dt;
+  dt = float((measurement_pack.timestamp_ - previous_timestamp_) / 1000000.0);  //dt - expressed in seconds
+  previous_timestamp_ = measurement_pack.timestamp_;
+
+  // 2. modify the F matrix so that the time is integrated
+  ekf_.F_(0,2) = dt;
+  ekf_.F_(1,3) = dt;
+
+  // 3. set the process covariance matrix Q
+  //    first, set G
+  ekf_.G_(0,0) = dt * dt / 2;
+  ekf_.G_(1,1) = dt * dt / 2;
+  ekf_.G_(2,0) = dt;
+  ekf_.G_(3,1) = dt;
+  // secondly, calculate new Q using G and Qv (introduced in classroom example)
+  ekf_.Q_ = ekf_.G_ * ekf_.Qv_ * ekf_.G_.transpose();
 
   ekf_.Predict();
 
