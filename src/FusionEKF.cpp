@@ -53,7 +53,7 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
    ****************************************************************************/
   if (!is_initialized_) {
     /**
-    TODO:
+    TODO: [DONE]
       * Initialize the state ekf_.x_ with the first measurement.
       * Create the covariance matrix.
       * Remember: you'll need to convert radar from polar to cartesian coordinates.
@@ -67,13 +67,29 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
       /**
       Convert radar from polar to cartesian coordinates and initialize state.
       */
+      // we need to extract all values from measurement package
+      float rho = measurement_pack.raw_measurements_(0); // distance
+      float phi_raw = measurement_pack.raw_measurements_(1); // angle [in radians] - can be outside range
+      float phi = tools.NormalizePhi(phi_raw); // make sure phi is in range from -pi to +pi
+      float delta_rho = measurement_pack.raw_measurements_(2); // speed in the direction of rho
+
+      // put values in the state
+      ekf_.x_(0) = rho * cos(phi); // distance projection on vertical axis x
+      ekf_.x_(1) = rho * sin(phi); // distance projection on horizontal axis y
+      ekf_.x_(2) = delta_rho * cos(phi); // speed projection on vertical axis x
+      ekf_.x_(3) = delta_rho * sin(phi); // speed projection on horizontal axis y
     }
     else if (measurement_pack.sensor_type_ == MeasurementPackage::LASER) {
       /**
       Initialize state.
       */
+      // easy case: just update coordinates
+      ekf_.x_(0) = measurement_pack.raw_measurements_(0);
+      ekf_.x_(1) = measurement_pack.raw_measurements_(1);
     }
 
+    // update previous timestamp
+    previous_timestamp_ = measurement_pack.timestamp_;
     // done initializing, no need to predict or update
     is_initialized_ = true;
     return;
