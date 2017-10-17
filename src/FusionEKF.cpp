@@ -181,15 +181,27 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
    ****************************************************************************/
 
   /**
-   TODO:
+   TODO: [DONE]
      * Use the sensor type to perform the update step.
      * Update the state and covariance matrices.
    */
 
   if (measurement_pack.sensor_type_ == MeasurementPackage::RADAR) {
     // Radar updates
+    // 1. calculate Jacobian
+    Hj_ = tools.CalculateJacobian(ekf_.x_);
+    // 2. update H and R matrices of the state
+    ekf_.H_ = Hj_;
+    ekf_.R_ = R_radar_;
+    // 3. do the radar update step
+    ekf_.UpdateEKF(measurement_pack.raw_measurements_);
   } else {
     // Laser updates
+    // 1. update H and R matrices of the state
+    ekf_.H_ = H_laser_;
+    ekf_.R_ = R_radar_;
+    // 3. do the laser update step
+    ekf_.Update(measurement_pack.raw_measurements_);
   }
 
   // print the output
