@@ -8,9 +8,8 @@ build/
 .vscode/
 .vscode/*
 
-# ignore othe config
+# ignore other config
 .idea/
-.idea/*
 
 # Xcode
 *.pbxuser
