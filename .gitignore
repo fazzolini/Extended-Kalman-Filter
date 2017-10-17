@@ -6,6 +6,11 @@ build/
 
 # editor config
 .vscode/
+.vscode/*
+
+# ignore othe config
+.idea/
+.idea/*
 
 # Xcode
 *.pbxuser
