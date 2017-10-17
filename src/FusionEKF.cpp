@@ -21,6 +21,10 @@ FusionEKF::FusionEKF() {
   R_radar_ = MatrixXd(3, 3);
   H_laser_ = MatrixXd(2, 4);
   Hj_ = MatrixXd(3, 4);
+  // also initialize ekf_ matrices
+  ekf_.F_ = MatrixXd(4, 4);
+  ekf_.P_ = MatrixXd(4, 4);
+
 
   //measurement covariance matrix - laser
   R_laser_ << 0.0225, 0,
@@ -32,11 +36,39 @@ FusionEKF::FusionEKF() {
         0, 0, 0.09;
 
   /**
-  TODO:
+  TODO: [DONE]
     * Finish initializing the FusionEKF.
     * Set the process and measurement noises
   */
 
+  // H matrices:
+
+  // this is the same as original H from classroom project
+  H_laser_ << 1, 0, 0, 0,
+              0, 1, 0, 0;
+
+  // new non-linear Hj_ Jacobian
+  /**
+   * initialize with ones, will be updated later for each step
+   * using Tools::CalculateJacobian()
+   */
+  Hj_ <<  1, 1, 0, 0,
+          1, 1, 0, 0,
+          1, 1, 1, 1;
+
+  // Kalman Filter state transition matrix
+  // same as in classroom exercise
+  ekf_.F_ <<  1, 0, 1, 0,
+              0, 1, 0, 1,
+              0, 0, 1, 0,
+              0, 0, 0, 1;
+
+  // Kalman Filter state covariance matrix
+  // same as in clsssroom exercise
+  ekf_.P_ <<  1, 0, 0, 0,
+              0, 1, 0, 0,
+              0, 0, 1000, 0,
+              0, 0, 0, 1000;
 
 }
 
