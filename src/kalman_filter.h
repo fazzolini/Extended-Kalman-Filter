@@ -24,6 +24,12 @@ public:
   // measurement covariance matrix
   Eigen::MatrixXd R_;
 
+  // process noise matrix
+  Eigen::MatrixXd G_;
+
+  // process noise Qv matrix
+  Eigen::MatrixXd Qv_;
+
   /**
    * Constructor
    */
