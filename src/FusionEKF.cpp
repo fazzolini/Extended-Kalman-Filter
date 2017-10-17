@@ -85,6 +85,9 @@ FusionEKF::FusionEKF() {
   ekf_.Qv_ = MatrixXd(2,2);
   ekf_.Qv_ << noise_ax, 0,
               0, noise_ay;
+
+  // also: initialize our tools
+  Tools tools;
 }
 
 /**
