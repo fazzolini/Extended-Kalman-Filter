@@ -22,7 +22,7 @@ void KalmanFilter::Init(VectorXd &x_in, MatrixXd &P_in, MatrixXd &F_in,
 
 void KalmanFilter::Predict() {
   /**
-  TODO: [DONE]
+  TODO: [DONE][OK]
     * predict the state
   */
   // the same as in in-class exercise
@@ -32,7 +32,7 @@ void KalmanFilter::Predict() {
 
 void KalmanFilter::Update(const VectorXd &z) {
   /**
-  TODO: [DONE]
+  TODO: [DONE][OK]
     * update the state by using Kalman Filter equations
   */
   // the same as in in-class exercise
@@ -58,7 +58,10 @@ void KalmanFilter::UpdateEKF(const VectorXd &z_measured) {
   */
   // NOTE: z_measured is incoming current radar measurement (rho, phi, delta_rho)
   // need to first compute (rho, phi, delta_rho) from the current state (px, py, vx, vy)
-  float px = x_(0), py = x_(1), vx = x_(2), vy = x_(3);
+  float px = x_(0);
+  float py = x_(1);
+  float vx = x_(2);
+  float vy = x_(3);
   float rho = sqrtf(px * px + py * py);
   float phi = atanf(py / px);
   float delta_rho; // need to make sure that denominator is not zero
@@ -81,7 +84,7 @@ void KalmanFilter::UpdateEKF(const VectorXd &z_measured) {
   MatrixXd K = PHt * Si;
 
   //new estimate is still the same as linear Kalman Filter
-  x_ = x_ + (K * z_measured);
+  x_ = x_ + (K * y);
   long x_size = x_.size();
   MatrixXd I = MatrixXd::Identity(x_size, x_size);
   P_ = (I - K * H_) * P_;
