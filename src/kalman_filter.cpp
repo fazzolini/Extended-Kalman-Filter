@@ -53,7 +53,7 @@ void KalmanFilter::Update(const VectorXd &z) {
 
 void KalmanFilter::UpdateEKF(const VectorXd &z_measured) {
   /**
-  TODO: [DONE]
+  TODO: [DONE][OK]
     * update the state by using Extended Kalman Filter equations
   */
   // NOTE: z_measured is incoming current radar measurement (rho, phi, delta_rho)
@@ -63,7 +63,7 @@ void KalmanFilter::UpdateEKF(const VectorXd &z_measured) {
   float vx = x_(2);
   float vy = x_(3);
   float rho = sqrtf(px * px + py * py);
-  float phi = atanf(py / px);
+  float phi = atan2(py, px);
   float delta_rho; // need to make sure that denominator is not zero
   if (fabsf(rho) < 0.0001) {
     delta_rho = 0;
@@ -77,6 +77,11 @@ void KalmanFilter::UpdateEKF(const VectorXd &z_measured) {
 
   // next lines are similar to the standard linear Kalman Filter
   VectorXd y = z_measured - z_predicted;
+
+  // normalize the angle to be in range from -pi to +pi
+  float angle = y(1);
+  y(1) = tools.NormalizePhi(angle);
+
   MatrixXd Ht = H_.transpose();
   MatrixXd S = H_ * P_ * Ht + R_;
   MatrixXd Si = S.inverse();
