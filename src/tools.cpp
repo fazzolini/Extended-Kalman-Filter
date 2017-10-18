@@ -12,7 +12,7 @@ Tools::~Tools() {}
 VectorXd Tools::CalculateRMSE(const vector<VectorXd> &estimations,
                               const vector<VectorXd> &ground_truth) {
   /**
-  TODO: [DONE]
+  TODO: [DONE][OK]
     * Calculate the RMSE here.
   */
 
@@ -55,7 +55,7 @@ VectorXd Tools::CalculateRMSE(const vector<VectorXd> &estimations,
 
 MatrixXd Tools::CalculateJacobian(const VectorXd& x_state) {
   /**
-  TODO: [DONE]
+  TODO: [DONE][OK]
     * Calculate a Jacobian here.
   */
 
@@ -74,6 +74,10 @@ MatrixXd Tools::CalculateJacobian(const VectorXd& x_state) {
   //check division by zero
   if(fabs(c1) < 0.0001){
     cout << "CalculateJacobian () - Error - Division by Zero" << endl;
+    // fall back to default Jacobian
+    Hj << 1, 1, 0, 0,
+          1, 1, 0, 0,
+          1, 1, 1, 1;
     return Hj;
   }
 
@@ -87,7 +91,7 @@ MatrixXd Tools::CalculateJacobian(const VectorXd& x_state) {
 }
 
 float Tools::NormalizePhi(float &original_phi) {
-  const float pi = float(M_PI); // use C++ math.h M_PI, cast double to float
+  const auto pi = float(M_PI); // use C++ math.h M_PI, cast double to float
   if (original_phi > pi) {
     while (original_phi > pi) {
       original_phi = original_phi - 2 * pi;
