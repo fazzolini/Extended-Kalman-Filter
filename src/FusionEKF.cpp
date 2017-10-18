@@ -199,7 +199,7 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
     // Laser updates
     // 1. update H and R matrices of the state
     ekf_.H_ = H_laser_;
-    ekf_.R_ = R_radar_;
+    ekf_.R_ = R_laser_;
     // 3. do the laser update step
     ekf_.Update(measurement_pack.raw_measurements_);
   }
