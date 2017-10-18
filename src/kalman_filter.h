@@ -2,6 +2,7 @@
 #define KALMAN_FILTER_H_
 #include <cmath>
 #include "Eigen/Dense"
+#include "tools.h"
 
 class KalmanFilter {
 public:
@@ -29,6 +30,9 @@ public:
 
   // process noise Qv matrix
   Eigen::MatrixXd Qv_;
+
+  // instance of tools
+  Tools tools;
 
   /**
    * Constructor
